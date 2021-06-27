@@ -111,3 +111,4 @@ class valorantBot():
 bot = valorantBot()
 #bot.getMaps()
 bot.getAgents(modes=['unrated', 'spike rush', 'custom'])
+#hi!
