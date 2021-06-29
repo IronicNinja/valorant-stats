@@ -71,50 +71,69 @@ class valorantBot():
                 maps_df = self.getMapsFromRank()
                 maps_df.to_csv(f"map_data/maps_{mode}_tier=0.csv")
 
-    def getAgentsFromRank(self, numAgents = 15):
+    def getAgentsFromRank(self, maxRanks = 15):
         agents_list = []
-        for i in range(1, numAgents + 1):
-            agentName = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/div/p').text
-            KD = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[2]').text
-            KDA_text = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[3]').text
-            winRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[4]').text
-            pickRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[5]').text
-            ACS = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[6]').text
-            firstBlood = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[7]').text
-            numMatches = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[8]').text
-            kills = KDA_text[:KDA_text.index('/')-1]
-            KDA_text = KDA_text[KDA_text.index('/')+2:]
-            deaths = KDA_text[:KDA_text.index('/')-1]
-            KDA_text = KDA_text[KDA_text.index('/')+2:]
-            assists = KDA_text
-            agents_list.append([agentName, KD, kills, deaths, assists, winRate, pickRate, ACS, firstBlood, numMatches])
+
+        numRanks = 0
+        for i in range(maxRanks, 1, -1):
+            try:
+                filler = self.driver.find_element_by_xpath(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[1]').text
+                numRanks = i
+                break
+            except:
+                pass
+
+        for i in range(1, numRanks + 1):
+            try:
+                agentName = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/div/p').text
+                KD = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[2]').text
+                KDA_text = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[3]').text
+                winRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[4]').text
+                pickRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[5]').text
+                ACS = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[6]').text
+                firstBlood = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[7]').text
+                numMatches = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[8]').text
+                kills = KDA_text[:KDA_text.index('/')-1]
+                KDA_text = KDA_text[KDA_text.index('/')+2:]
+                deaths = KDA_text[:KDA_text.index('/')-1]
+                KDA_text = KDA_text[KDA_text.index('/')+2:]
+                assists = KDA_text
+                agents_list.append([agentName, KD, kills, deaths, assists, winRate, pickRate, ACS, firstBlood, numMatches])
+                i += 1
+            except:
+                break
 
         agents_df = pd.DataFrame(agents_list, columns=["Agent Name", "KD", "Kills", "Deaths", "Assists",
             "Win Rate", "Pick Rate", "ACS", "First Blood", "Num Matches"])
         return agents_df
 
-    def getAgents(self, modes = ["Competitive", "Unrated", "Spike Rush", "Custom"]):
-        for mode in modes:
-            mode = (mode.lower()).replace(' ', '')
-            print(f"Completing analysis of agents for mode {mode}.")
+    def getAgents(self, modes = ["Competitive", "Unrated", "Spike Rush", "Custom"], maps = ["All", "Bind", "Split",
+            "Ascent", "Haven", "Icebox", "Breeze"]):
 
-            if mode == "competitive":
-                for i in range(3, 21):
-                    print(f"Completing analysis of tier {i}...")
-                    self.driver.get(f'https://blitz.gg/valorant/stats/agents?map=all&act=e3act1&queue=competitive&tier={i}')
+        for mapName in maps:
+            mapName = mapName.lower()
+            print(f"Completing analysis of agents for map {mapName}.")
+            for mode in modes:
+                mode = (mode.lower()).replace(' ', '')
+                print(f"Completing analysis of agents for mode {mode}.")
+
+                if mode == "competitive":
+                    for i in range(3, 21):
+                        print(f"Completing analysis of tier {i}...")
+                        self.driver.get(f'https://blitz.gg/valorant/stats/agents?map={mapName}&act=e3act1&queue=competitive&tier={i}')
+                        sleep(1)
+                        agents_df = self.getAgentsFromRank()
+                        agents_df.to_csv(f"agents_data/{mapName}/agents_competitive_tier={i}.csv")
+                else:
+                    self.driver.get(f'https://blitz.gg/valorant/stats/agents?map=all&act=e3act1&queue={mode}&tier=0')
                     sleep(1)
                     agents_df = self.getAgentsFromRank()
-                    agents_df.to_csv(f"agents_data/agents_competitive_tier={i}.csv")
-            else:
-                self.driver.get(f'https://blitz.gg/valorant/stats/agents?map=all&act=e3act1&queue={mode}&tier=0')
-                sleep(1)
-                agents_df = self.getAgentsFromRank()
-                agents_df.to_csv(f"agents_data/agents_{mode}_tier=0.csv")
+                    agents_df.to_csv(f"agents_data/{mapName}/agents_{mode}_tier=0.csv")
 
     def end(self):
         self.driver.quit()
 
 bot = valorantBot()
 #bot.getMaps()
-bot.getAgents()
+bot.getAgents(maps=["Bind", "Ascent", "Split", "Haven", "Icebox", "Breeze"])
 #testing
