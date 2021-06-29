@@ -77,14 +77,20 @@ class valorantBot():
             agentName = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/div/p').text
             KD = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[2]').text
             KDA_text = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[3]').text
+            winRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[4]').text
+            pickRate = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[5]').text
+            ACS = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[6]').text
+            firstBlood = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[7]').text
+            numMatches = self.fTry(f'//*[@id="scroll-view-main"]/div[1]/div/div/div/div/div[1]/div/div[2]/div/div[2]/ul/li[{i}]/a/p[8]').text
             kills = KDA_text[:KDA_text.index('/')-1]
             KDA_text = KDA_text[KDA_text.index('/')+2:]
             deaths = KDA_text[:KDA_text.index('/')-1]
             KDA_text = KDA_text[KDA_text.index('/')+2:]
             assists = KDA_text
-            agents_list.append([agentName, KD, kills, deaths, assists])
+            agents_list.append([agentName, KD, kills, deaths, assists, winRate, pickRate, ACS, firstBlood, numMatches])
 
-        agents_df = pd.DataFrame(agents_list, columns=["Agent Name", "KD", "Kills", "Deaths", "Assists"])
+        agents_df = pd.DataFrame(agents_list, columns=["Agent Name", "KD", "Kills", "Deaths", "Assists",
+            "Win Rate", "Pick Rate", "ACS", "First Blood", "Num Matches"])
         return agents_df
 
     def getAgents(self, modes = ["Competitive", "Unrated", "Spike Rush", "Custom"]):
@@ -110,5 +116,5 @@ class valorantBot():
 
 bot = valorantBot()
 #bot.getMaps()
-bot.getAgents(modes=['unrated', 'spike rush', 'custom'])
+bot.getAgents()
 #testing
