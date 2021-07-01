@@ -2,6 +2,8 @@
 
 Riot Games presents VALORANT: a 5v5 character-based tactical FPS where precise gunplay meets unique agent abilities. With over 14 million active monthly users, Valorant is one of the most popular (and free!) games out right now. In this project, I pull data from <a href="https://blitz.gg/">blitz.gg</a>. See <a href="https://www.kaggle.com/ironicninja/valorant-stats-project"/> my associated Kaggle notebook </a> for my analysis & visualizations.
 
+Please leave a star on this repo if you decide to use the data!
+
 # Files
 
 * ```valorant.py``` - Primary file which is run to scrape the data. This python script uses selenium to extract data (element from xpath) from the website.
