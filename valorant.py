@@ -123,7 +123,7 @@ class valorantBot():
                 print(f"Completing analysis of agents for mode {mode}.")
 
                 if mode == "competitive":
-                    for i in range(3, 21):
+                    for i in range(3, 22):
                         print(f"Completing analysis of tier {i}...")
                         self.driver.get(f'https://blitz.gg/valorant/stats/agents?map={mapName}&act=e3act1&queue=competitive&tier={i}')
                         sleep(1)
@@ -169,7 +169,7 @@ class valorantBot():
                 print(f"Completing analysis of agents' abilities for mode {mode}.")
 
                 if mode == "competitive":
-                    for i in range(3, 21):
+                    for i in range(3, 22):
                         print(f"Completing analysis of tier {i}...")
                         self.driver.get(f'https://blitz.gg/valorant/stats/agents?map={mapName}&act=e3act1&queue=competitive&tier={i}')
                         sleep(1)
@@ -215,7 +215,7 @@ class valorantBot():
                 print(f"Completing analysis of weapons for mode {mode}.")
 
                 if mode == "competitive":
-                    for i in range(3, 21):
+                    for i in range(3, 22):
                         print(f"Completing analysis of tier {i}...")
                         self.driver.get(f'https://blitz.gg/valorant/stats/weapons?map={mapName}&act=e3act1&queue=competitive&tier={i}')
                         sleep(1)
@@ -231,7 +231,7 @@ class valorantBot():
         self.driver.quit()
 
 bot = valorantBot()
-#bot.getMaps()
-#bot.getAbilities()
-bot.getWeapons(maps = ["All"])
-#testing
+bot.getMaps()
+bot.getAgents(maps=["All"])
+bot.getAbilities(maps=["All"])
+bot.getWeapons(maps=["All"])
